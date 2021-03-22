@@ -1,0 +1,24 @@
+Response
+  { took = 30
+  , errors = False
+  , items =
+      fromListN
+        2
+        [ Item
+            { action = Index
+            , index = "test"
+            , id = "1"
+            , status = 201
+            , details =
+                Success ConcurrencyControl { version = 1 , sequenceNumber = 0 }
+            }
+        , Item
+            { action = Delete
+            , index = "test"
+            , id = "2"
+            , status = 404
+            , details =
+                Success ConcurrencyControl { version = 1 , sequenceNumber = 1 }
+            }
+        ]
+  }
