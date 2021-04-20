@@ -10,12 +10,6 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-import Data.Bytes.Chunks (Chunks(ChunksNil,ChunksCons))
-import Data.Bytes.Types (Bytes(Bytes))
-import Data.Char (ord)
-import Data.Primitive (ByteArray)
-import Data.Proxy (Proxy(..))
-import Data.Word (Word8)
 import Test.Tasty (defaultMain,testGroup,TestTree)
 import Test.Tasty.Golden (goldenVsString)
 import Elasticsearch.Bulk.Request (Operation(Operation),Action(Index,Create))
@@ -23,13 +17,9 @@ import Elasticsearch.Bulk.Response (Details,Error,ConcurrencyControl,Item,Respon
 import Text.Show.Pretty (ppShow)
 import Json (pattern (:->))
 
-import qualified Data.ByteString as ByteString
 import qualified Data.Bytes as Bytes
 import qualified Data.Bytes.Chunks as Chunks
 import qualified Data.Bytes.Builder as Builder
-import qualified Data.Foldable as Foldable
-import qualified Data.List as List
-import qualified Data.Primitive as PM
 import qualified Data.Maybe.Unpacked.Text.Short as M
 import qualified GHC.Exts as Exts
 import qualified Elasticsearch.Bulk.Request as Bulk.Request
@@ -38,7 +28,6 @@ import qualified Json
 import qualified Json.Path as Path
 import qualified Json.Parser as Parser
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.ByteString.Char8 as BC8
 import qualified Data.ByteString.Lazy.Char8 as LBC8
 import qualified Data.Text.Short as TS
 
@@ -78,7 +67,7 @@ tests = testGroup "Elasticsearch"
             Left _ -> fail "input file was not JSON"
             Right v -> do
               case Parser.run (Bulk.Response.parser v) of
-                Left path -> fail ("parse error at: " ++ TS.unpack (Path.encode path))
+                Left path -> fail ("parse error at: " ++ foldMap (\p -> ',' : TS.unpack (Path.encode p)) (Parser.getMultipath path))
                 Right response -> pure (LBC8.pack (ppShow response))
       ]
     ]

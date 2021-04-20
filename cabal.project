@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+    type: git
+    location: https://github.com/andrewthad/json-query
+    tag: 6c20bb91d3345b914600e2adfcd31cdada6d9115
