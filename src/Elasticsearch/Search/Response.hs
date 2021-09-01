@@ -6,7 +6,7 @@
 {-# language OverloadedStrings #-}
 {-# language UnboxedTuples #-}
 
--- | Response
+-- | Responses from Search API (@http:\/\/elasticsearch.example.com\/{index}\/_search@)
 module Elasticsearch.Search.Response
   ( -- * Types
     Response(..)
@@ -45,15 +45,19 @@ data Response = Response
 
 data Hits = Hits
   { total :: !Total
-    -- ^ How many milliseconds did the operation take?
+    -- ^ Information about the total number of documents that matched
   , hits :: !(SmallArray Hit)
     -- ^ Array of hits 
   } deriving (Show)
 
+-- | A document that matched the search criteria
 data Hit = Hit
   { index :: !ShortText
+    -- ^ Index name
   , id :: !ShortText
+    -- ^ Document id
   , source :: !J.Value
+    -- ^ Source document
   } deriving (Show)
 
 data Total = Total
@@ -95,48 +99,48 @@ hitParser = do
 --
 -- Example response from Elasticsearch documentation:
 --
--- {
---   "took": 5,
---   "timed_out": false,
---   "_shards": {
---     "total": 1,
---     "successful": 1,
---     "skipped": 0,
---     "failed": 0
---   },
---   "hits": {
---     "total": {
---       "value": 20,
---       "relation": "eq"
---     },
---     "max_score": 1.3862942,
---     "hits": [
---       {
---         "_index": "my-index-000001",
---         "_type" : "_doc",
---         "_id": "0",
---         "_score": 1.3862942,
---         "_source": {
---           "@timestamp": "2099-11-15T14:12:12",
---           "http": {
---             "request": {
---               "method": "get"
---             },
---             "response": {
---               "status_code": 200,
---               "bytes": 1070000
---             },
---             "version": "1.1"
---           },
---           "source": {
---             "ip": "127.0.0.1"
---           },
---           "message": "GET /search HTTP/1.1 200 1070000",
---           "user": {
---             "id": "kimchy"
---           }
---         }
---       }
---     ]
---   }
--- }
+-- > {
+-- >   "took": 5,
+-- >   "timed_out": false,
+-- >   "_shards": {
+-- >     "total": 1,
+-- >     "successful": 1,
+-- >     "skipped": 0,
+-- >     "failed": 0
+-- >   },
+-- >   "hits": {
+-- >     "total": {
+-- >       "value": 20,
+-- >       "relation": "eq"
+-- >     },
+-- >     "max_score": 1.3862942,
+-- >     "hits": [
+-- >       {
+-- >         "_index": "my-index-000001",
+-- >         "_type" : "_doc",
+-- >         "_id": "0",
+-- >         "_score": 1.3862942,
+-- >         "_source": {
+-- >           "@timestamp": "2099-11-15T14:12:12",
+-- >           "http": {
+-- >             "request": {
+-- >               "method": "get"
+-- >             },
+-- >             "response": {
+-- >               "status_code": 200,
+-- >               "bytes": 1070000
+-- >             },
+-- >             "version": "1.1"
+-- >           },
+-- >           "source": {
+-- >             "ip": "127.0.0.1"
+-- >           },
+-- >           "message": "GET /search HTTP/1.1 200 1070000",
+-- >           "user": {
+-- >             "id": "kimchy"
+-- >           }
+-- >         }
+-- >       }
+-- >     ]
+-- >   }
+-- > }
