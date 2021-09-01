@@ -27,6 +27,7 @@ library
   exposed-modules:
     Elasticsearch.Bulk.Request
     Elasticsearch.Bulk.Response
+    Elasticsearch.Search.Response
   build-depends:
     , base >=4.13 && <5
     , bytebuild >=0.3.7 && <0.4

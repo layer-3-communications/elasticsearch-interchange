@@ -24,6 +24,7 @@ import qualified Data.Maybe.Unpacked.Text.Short as M
 import qualified GHC.Exts as Exts
 import qualified Elasticsearch.Bulk.Request as Bulk.Request
 import qualified Elasticsearch.Bulk.Response as Bulk.Response
+import qualified Elasticsearch.Search.Response as Search.Response
 import qualified Json
 import qualified Json.Path as Path
 import qualified Json.Parser as Parser
@@ -36,7 +37,19 @@ main = defaultMain tests
 
 tests :: TestTree
 tests = testGroup "Elasticsearch"
-  [ testGroup "Bulk"
+  [ testGroup "Search"
+    [ testGroup "Response"
+      [ goldenVsString "001" "samples/search/response/001/output.txt" $ do
+          c <- Bytes.readFile "samples/search/response/001/input.json"
+          case Json.decode c of
+            Left _ -> fail "input file was not JSON"
+            Right v -> do
+              case Parser.run (Search.Response.parser v) of
+                Left path -> fail ("parse error at: " ++ foldMap (\p -> ',' : TS.unpack (Path.encode p)) (Parser.getMultipath path))
+                Right response -> pure (LBC8.pack (ppShow response))
+      ]
+    ]
+  , testGroup "Bulk"
     [ testGroup "Request"
       [ goldenVsString "001" "samples/bulk/request/001/output.json"
           $ pure

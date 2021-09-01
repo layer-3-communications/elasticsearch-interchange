@@ -1,0 +1,75 @@
+Response
+  { took = 5
+  , hits =
+      Hits
+        { total = Total { value = 20 , relation = "eq" }
+        , hits =
+            fromListN
+              1
+              [ Hit
+                  { index = "my-index-000001"
+                  , id = "0"
+                  , source =
+                      Object
+                        (fromListN
+                           5
+                           [ Member
+                               { key = "@timestamp" , value = String "2099-11-15T14:12:12" }
+                           , Member
+                               { key = "http"
+                               , value =
+                                   Object
+                                     (fromListN
+                                        3
+                                        [ Member
+                                            { key = "request"
+                                            , value =
+                                                Object
+                                                  (fromListN
+                                                     1
+                                                     [ Member
+                                                         { key = "method" , value = String "get" }
+                                                     ])
+                                            }
+                                        , Member
+                                            { key = "response"
+                                            , value =
+                                                Object
+                                                  (fromListN
+                                                     2
+                                                     [ Member
+                                                         { key = "status_code"
+                                                         , value = Number 200e0
+                                                         }
+                                                     , Member
+                                                         { key = "bytes"
+                                                         , value = Number 1070000e0
+                                                         }
+                                                     ])
+                                            }
+                                        , Member { key = "version" , value = String "1.1" }
+                                        ])
+                               }
+                           , Member
+                               { key = "source"
+                               , value =
+                                   Object
+                                     (fromListN
+                                        1 [ Member { key = "ip" , value = String "127.0.0.1" } ])
+                               }
+                           , Member
+                               { key = "message"
+                               , value = String "GET /search HTTP/1.1 200 1070000"
+                               }
+                           , Member
+                               { key = "user"
+                               , value =
+                                   Object
+                                     (fromListN
+                                        1 [ Member { key = "id" , value = String "kimchy" } ])
+                               }
+                           ])
+                  }
+              ]
+        }
+  }
