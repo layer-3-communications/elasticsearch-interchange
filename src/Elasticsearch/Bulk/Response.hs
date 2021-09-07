@@ -31,7 +31,7 @@ import Data.Word (Word64,Word16)
 import Elasticsearch.Bulk.Request (Action(Update,Create,Delete,Index))
 import Json (Member(Member))
 import Json.Parser (Parser,MemberParser)
-import Json.Path (Path(Key))
+import Json.Context (Context(Key))
 
 import qualified Data.Primitive as PM
 import qualified Json as J
@@ -101,7 +101,7 @@ itemParser v = do
         "create" -> pure Create
         "delete" -> pure Delete
         "index" -> pure Index
-        _ -> P.fail
+        _ -> P.fail "expected one of: update, create, delete, index"
       P.contextually (Key keyAction) $ do
         mbrsProps <- P.object valueAction
         case find (\Member{key=keyProp} -> keyProp == "error") mbrsProps of
@@ -128,7 +128,7 @@ itemParser v = do
                      , details=Failure err
                      }
               ) mbrsProps
-    _ -> P.fail
+    _ -> P.fail "expected object with single member"
 
 errorMemberParser :: MemberParser Error
 errorMemberParser = do
