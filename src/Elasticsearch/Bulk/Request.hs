@@ -7,6 +7,7 @@ module Elasticsearch.Bulk.Request
   ( Operation(..)
   , Action(..)
   , encode
+  , encodeSmile
   ) where
 
 import Data.Bytes.Builder (Builder)
@@ -17,6 +18,7 @@ import GHC.Exts (Ptr(Ptr))
 import qualified Data.Maybe.Unpacked.Text.Short as M
 import qualified Data.Bytes.Builder as Builder
 import qualified Json
+import qualified Json.Smile
 
 -- | A single operation in a bulk request.
 data Operation = Operation
@@ -75,3 +77,61 @@ encodePreamble x = case x of
   Index -> Builder.cstring (Ptr "{\"index\":{\"_index\":"# )
   Delete -> Builder.cstring (Ptr "{\"delete\":{\"_index\":"# )
   Update -> Builder.cstring (Ptr "{\"update\":{\"_index\":"# )
+
+-- | Encode with SMILE. This does not use backreferences.
+encodeSmile :: SmallArray Operation -> Builder
+{-# noinline encodeSmile #-}
+encodeSmile !xs = foldMap encodeSmileOne xs
+
+encodeSmileAction :: Action -> ShortText -> ShortText -> Builder
+{-# inline encodeSmileAction #-}
+encodeSmileAction x !indexName !docId =
+  ( case x of
+      Create ->
+        -- Breakdown:
+        -- [0-3]: four-byte prefix, smiley face
+        -- [4]: object (0xfa)
+        -- [5]: key, length 6
+        -- [6-11]: "create"
+        -- [12]: object (0xfa)
+        -- [13]: key, length 6
+        -- [14-19]: "_index"
+        Builder.cstring (Ptr "\x3a\x29\x0a\x00\xfa\x85\x63\x72\x65\x61\x74\x65\xfa\x85\x5f\x69\x6e\x64\x65\x78"#)
+      Index -> 
+        -- Nearly the same as create but with the action key different
+        Builder.cstring (Ptr "\x3a\x29\x0a\x00\xfa\x84\x69\x6e\x64\x65\x78\xfa\x85\x5f\x69\x6e\x64\x65\x78"#)
+      _ -> errorWithoutStackTrace "Elasticsearch.Bulk.Request[encodeSmileAction]: write Update and Delete cases"
+  )
+  <>
+  Json.Smile.encodeString indexName
+  <>
+  Builder.cstring (Ptr "\x82\x5f\x69\x64"#) -- the "_id" key
+  <>
+  Json.Smile.encodeString docId
+  <>
+  Builder.cstring (Ptr "\xfb\xfb\xff"#) -- close objects and stream separator 0xFF
+
+encodeSmileActionWithoutDocId :: Action -> ShortText -> Builder
+{-# inline encodeSmileActionWithoutDocId #-}
+encodeSmileActionWithoutDocId x !indexName =
+  ( case x of
+      Create ->
+        Builder.cstring (Ptr "\x3a\x29\x0a\x00\xfa\x85\x63\x72\x65\x61\x74\x65\xfa\x85\x5f\x69\x6e\x64\x65\x78"#)
+      Index -> 
+        -- Nearly the same as create but with the action key different
+        Builder.cstring (Ptr "\x3a\x29\x0a\x00\xfa\x84\x69\x6e\x64\x65\x78\xfa\x85\x5f\x69\x6e\x64\x65\x78"#)
+      _ -> errorWithoutStackTrace "Elasticsearch.Bulk.Request[encodeSmileAction]: write Update and Delete cases"
+  )
+  <>
+  Json.Smile.encodeString indexName
+  <>
+  Builder.cstring (Ptr "\xfb\xfb\xff"#) -- close objects and stream separator 0xFF
+
+encodeSmileOne :: Operation -> Builder
+encodeSmileOne Operation{action,index,id_,document} =
+     M.maybe
+       (encodeSmileActionWithoutDocId action)
+       (encodeSmileAction action index)
+       id_
+  <> Json.Smile.encodeSimple document
+  <> Builder.word8 0xFF
