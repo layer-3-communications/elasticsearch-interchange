@@ -130,8 +130,8 @@ encodeSmileActionWithoutDocId x !indexName =
 encodeSmileOne :: Operation -> Builder
 encodeSmileOne Operation{action,index,id_,document} =
      M.maybe
-       (encodeSmileActionWithoutDocId action)
+       (encodeSmileActionWithoutDocId action index)
        (encodeSmileAction action index)
        id_
-  <> Json.Smile.encodeSimple document
+  <> Json.Smile.encode document
   <> Builder.word8 0xFF
