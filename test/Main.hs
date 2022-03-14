@@ -26,7 +26,7 @@ import qualified Elasticsearch.Bulk.Request as Bulk.Request
 import qualified Elasticsearch.Bulk.Response as Bulk.Response
 import qualified Elasticsearch.Search.Response as Search.Response
 import qualified Json
-import qualified Json.Path as Path
+import qualified Json.Errors as Errors
 import qualified Json.Parser as Parser
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Lazy.Char8 as LBC8
@@ -45,7 +45,7 @@ tests = testGroup "Elasticsearch"
             Left _ -> fail "input file was not JSON"
             Right v -> do
               case Parser.run (Search.Response.parser v) of
-                Left path -> fail ("parse error at: " ++ foldMap (\p -> ',' : TS.unpack (Path.encode p)) (Parser.getMultipath path))
+                Left errs -> fail ("parse error at: " ++  TS.unpack (Errors.encode errs))
                 Right response -> pure (LBC8.pack (ppShow response))
       ]
     ]
@@ -80,7 +80,7 @@ tests = testGroup "Elasticsearch"
             Left _ -> fail "input file was not JSON"
             Right v -> do
               case Parser.run (Bulk.Response.parser v) of
-                Left path -> fail ("parse error at: " ++ foldMap (\p -> ',' : TS.unpack (Path.encode p)) (Parser.getMultipath path))
+                Left errs -> fail ("parse error at: " ++  TS.unpack (Errors.encode errs))
                 Right response -> pure (LBC8.pack (ppShow response))
       ]
     ]
