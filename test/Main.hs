@@ -4,7 +4,6 @@
 {-# language NumDecimals #-}
 {-# language OverloadedStrings #-}
 {-# language ScopedTypeVariables #-}
-{-# language StandaloneDeriving #-}
 {-# language TypeApplications #-}
 {-# language PatternSynonyms #-}
 
@@ -13,18 +12,20 @@
 import Test.Tasty (defaultMain,testGroup,TestTree)
 import Test.Tasty.Golden (goldenVsString)
 import Elasticsearch.Bulk.Request (Operation(Operation),Action(Index,Create))
-import Elasticsearch.Bulk.Response (Details,Error,ConcurrencyControl,Item,Response)
 import Text.Show.Pretty (ppShow)
 import Json (pattern (:->))
 
 import qualified Data.Bytes as Bytes
 import qualified Data.Bytes.Chunks as Chunks
 import qualified Data.Bytes.Builder as Builder
+import qualified Data.List as List
 import qualified Data.Maybe.Unpacked.Text.Short as M
 import qualified GHC.Exts as Exts
 import qualified Elasticsearch.Bulk.Request as Bulk.Request
 import qualified Elasticsearch.Bulk.Response as Bulk.Response
 import qualified Elasticsearch.Search.Response as Search.Response
+import qualified Elasticsearch.Cat.Indices.Response as Cat.Indices.Response
+import qualified Elasticsearch.Cat.Aliases.Response as Cat.Aliases.Response
 import qualified Json
 import qualified Json.Errors as Errors
 import qualified Json.Parser as Parser
@@ -40,13 +41,19 @@ tests = testGroup "Elasticsearch"
   [ testGroup "Search"
     [ testGroup "Response"
       [ goldenVsString "001" "samples/search/response/001/output.txt" $ do
-          c <- Bytes.readFile "samples/search/response/001/input.json"
-          case Json.decode c of
-            Left _ -> fail "input file was not JSON"
-            Right v -> do
-              case Parser.run (Search.Response.parser v) of
-                Left errs -> fail ("parse error at: " ++  TS.unpack (Errors.encode errs))
-                Right response -> pure (LBC8.pack (ppShow response))
+          prepare "samples/search/response/001/input.json" Search.Response.parser
+      ]
+    ]
+  , testGroup "Aliases"
+    [ testGroup "Response"
+      [ goldenVsString "001" "samples/cat/aliases/response/001/output.txt" $ do
+          prepare "samples/cat/aliases/response/001/input.json" Cat.Aliases.Response.parser
+      ]
+    ]
+  , testGroup "Indices"
+    [ testGroup "Response"
+      [ goldenVsString "001" "samples/cat/indices/response/001/output.txt" $ do
+          prepare "samples/cat/indices/response/001/input.json" Cat.Indices.Response.parser
       ]
     ]
   , testGroup "Bulk"
@@ -75,20 +82,23 @@ tests = testGroup "Elasticsearch"
       ]
     , testGroup "Response"
       [ goldenVsString "001" "samples/bulk/response/001/output.txt" $ do
-          c <- Bytes.readFile "samples/bulk/response/001/input.json"
-          case Json.decode c of
-            Left _ -> fail "input file was not JSON"
-            Right v -> do
-              case Parser.run (Bulk.Response.parser v) of
-                Left errs -> fail ("parse error at: " ++  TS.unpack (Errors.encode errs))
-                Right response -> pure (LBC8.pack (ppShow response))
+          prepare "samples/bulk/response/001/input.json" Bulk.Response.parser
       ]
     ]
   ]
 
-deriving instance Show Response
-deriving instance Show Action
-deriving instance Show Item
-deriving instance Show ConcurrencyControl
-deriving instance Show Error
-deriving instance Show Details
+prepare :: Show a
+  => String -- path to json
+  -> (Json.Value -> Parser.Parser a)
+  -> IO LBC8.ByteString
+prepare path parse = do
+  c <- Bytes.readFile path
+  case Json.decode c of
+    Left _ -> fail "input file was not JSON"
+    Right v -> do
+      case Parser.run (parse v) of
+        Left errs -> fail ("parse error at: " ++  TS.unpack (Errors.encode errs))
+        Right response -> do
+          let raw = ppShow response
+          let clean = if List.isSuffixOf "\n" raw then raw else raw ++ "\n"
+          pure (LBC8.pack clean)

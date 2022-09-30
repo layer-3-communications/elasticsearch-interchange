@@ -30,7 +30,7 @@ data Operation = Operation
     -- ^ Document ID, optional but strongly recommended.
   , document :: !Json.Value
     -- ^ Document 
-  }
+  } deriving (Show)
 
 -- | The action to be taken with the document.
 data Action
@@ -43,6 +43,7 @@ data Action
     --   malformed request.
   | Update
     -- ^ Update a document. Fails if document with ID does not exist.
+  deriving (Show)
 
 -- | Encode returns a builder, not a JSON value, because the body of
 -- an Elasticsearch bulk requests is not JSON. Technically, it is

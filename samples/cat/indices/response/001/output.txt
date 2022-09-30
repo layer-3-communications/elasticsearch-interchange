@@ -1,0 +1,12 @@
+Response
+  { indices =
+      fromListN
+        3
+        [ Index
+            { health = Green , status = Open , index = "example-alpha" }
+        , Index
+            { health = Green , status = Closed , index = "example-beta" }
+        , Index
+            { health = Yellow , status = Open , index = "example-gamma" }
+        ]
+  }

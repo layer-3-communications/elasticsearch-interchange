@@ -1,0 +1,38 @@
+[
+  {
+    "health": "green",
+    "status": "open",
+    "index": "example-alpha",
+    "uuid": "L_ObHO__R32Mn5ef_HEuFQ",
+    "pri": "1",
+    "rep": "1",
+    "docs.count": "6728",
+    "docs.deleted": "152",
+    "store.size": "2254044",
+    "pri.store.size": "1121907"
+  },
+  {
+    "health": "green",
+    "status": "closed",
+    "index": "example-beta",
+    "uuid": "KlgRurzNRRanrldo06OFog",
+    "pri": "1",
+    "rep": "1",
+    "docs.count": "85",
+    "docs.deleted": "0",
+    "store.size": "286823",
+    "pri.store.size": "143410"
+  },
+  {
+    "health": "yellow",
+    "status": "open",
+    "index": "example-gamma",
+    "uuid": "bcqcIRUPRoklp-GW_l1gYg",
+    "pri": "1",
+    "rep": "1",
+    "docs.count": "22517",
+    "docs.deleted": "6019",
+    "store.size": "164020888",
+    "pri.store.size": "82609812"
+  }
+]

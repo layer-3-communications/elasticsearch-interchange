@@ -1,0 +1,26 @@
+[
+  {
+    "alias": "widgets",
+    "index": "widgets-2022.09.21",
+    "filter": "-",
+    "routing.index": "-",
+    "routing.search": "-",
+    "is_write_index": "-"
+  },
+  {
+    "alias": "widgets",
+    "index": "widgets-2022.09.22",
+    "filter": "-",
+    "routing.index": "-",
+    "routing.search": "-",
+    "is_write_index": "-"
+  },
+  {
+    "alias": "gadgets",
+    "index": "gadgets-2022.09.21",
+    "filter": "-",
+    "routing.index": "-",
+    "routing.search": "-",
+    "is_write_index": "-"
+  }
+]

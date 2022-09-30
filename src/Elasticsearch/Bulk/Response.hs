@@ -6,7 +6,7 @@
 {-# language OverloadedStrings #-}
 {-# language UnboxedTuples #-}
 
--- | Response
+-- | Response to @/_bulk@ request.
 module Elasticsearch.Bulk.Response
   ( -- * Types
     Response(..)
@@ -44,7 +44,7 @@ data Response = Response
     -- ^ Did anything go wrong?
   , items :: !(SmallArray Item)
     -- ^ Individual responses for each operation.
-  }
+  } deriving (Show)
 
 -- | The _type field is omitted because it is always _doc in Elasticsearch 7+.
 -- Some other fields are omitted because they are only present when an operation
@@ -59,25 +59,26 @@ data Item = Item
     -- ^ @status@
   , details :: !Details
     -- ^ No single field dictates the details.
-  }
+  } deriving (Show)
 
 -- | An item has different fields depending on whether the operation
 -- was considered to have succeeded.
 data Details 
   = Success !ConcurrencyControl
   | Failure !Error
+  deriving (Show)
 
 data ConcurrencyControl = ConcurrencyControl
   { version :: !Word64
     -- ^ @_version@
   , sequenceNumber :: !Word64
     -- ^ @_seq_no@
-  }
+  } deriving (Show)
 
 data Error = Error
   { type_ :: !ShortText
   , reason :: !ShortText
-  }
+  } deriving (Show)
 
 -- | Decode the JSON response to a bulk request.
 parser :: J.Value -> Parser Response
