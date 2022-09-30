@@ -26,6 +26,7 @@ import qualified Elasticsearch.Bulk.Response as Bulk.Response
 import qualified Elasticsearch.Search.Response as Search.Response
 import qualified Elasticsearch.Cat.Indices.Response as Cat.Indices.Response
 import qualified Elasticsearch.Cat.Aliases.Response as Cat.Aliases.Response
+import qualified Elasticsearch.Aliases.Request as Aliases.Request
 import qualified Json
 import qualified Json.Errors as Errors
 import qualified Json.Parser as Parser
@@ -44,16 +45,38 @@ tests = testGroup "Elasticsearch"
           prepare "samples/search/response/001/input.json" Search.Response.parser
       ]
     ]
-  , testGroup "Aliases"
+  , testGroup "CatAliases"
     [ testGroup "Response"
       [ goldenVsString "001" "samples/cat/aliases/response/001/output.txt" $ do
           prepare "samples/cat/aliases/response/001/input.json" Cat.Aliases.Response.parser
       ]
     ]
-  , testGroup "Indices"
+  , testGroup "CatIndices"
     [ testGroup "Response"
       [ goldenVsString "001" "samples/cat/indices/response/001/output.txt" $ do
           prepare "samples/cat/indices/response/001/input.json" Cat.Indices.Response.parser
+      ]
+    ]
+  , testGroup "Aliases"
+    [ testGroup "Request"
+      [ goldenVsString "001" "samples/aliases/request/001/output.json"
+          $ pure
+          $ LBS.fromStrict
+          $ Chunks.concatByteString
+          $ Builder.run 64
+          $ Json.encode
+          $ Aliases.Request.encode
+          $ Exts.fromList
+            [ Aliases.Request.Add Aliases.Request.AddAttributes
+              { alias = "person-2018"
+              , index = "person-2018.09.28"
+              , isWriteIndex = False
+              }
+            , Aliases.Request.Remove Aliases.Request.RemoveAttributes
+              { alias = "person-2018"
+              , index = "person-2018.09.27"
+              }
+            ]
       ]
     ]
   , testGroup "Bulk"

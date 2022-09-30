@@ -34,6 +34,7 @@ library
     Elasticsearch.Search.Response
     Elasticsearch.Cat.Indices.Response
     Elasticsearch.Cat.Aliases.Response
+    Elasticsearch.Aliases.Request
   build-depends:
     , base >=4.13 && <5
     , bytebuild >=0.3.7 && <0.4
