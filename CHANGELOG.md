@@ -1,5 +1,5 @@
 # Revision history for elasticsearch-interchange
 
-## 0.1.0.0 -- YYYY-mm-dd
+## 0.1.0.0 -- 2022-12-08
 
-* First version. Released on an unsuspecting world.
+* Initial release
