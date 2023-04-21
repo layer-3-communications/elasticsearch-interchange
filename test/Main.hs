@@ -92,14 +92,13 @@ tests = testGroup "Elasticsearch"
               { action = Index
               , index = "person-2018.09.28"
               , id_ = M.just "5bc6d38e-8b30-11eb-8dcd-0242ac130003"
-              , document = Json.emptyObject
+              , document = mempty
               }
             , Operation
               { action = Create
               , index = "person-2018.09.29"
               , id_ = M.just "3cd512c8-8b31-11eb-8dcd-0242ac130003"
-              , document = Json.Object
-                  (Exts.fromList ["name" :-> Json.String "Xavier"])
+              , document = Exts.fromList ["name" :-> Json.String "Xavier"]
               }
             ]
       ]

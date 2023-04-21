@@ -28,7 +28,7 @@ data Operation = Operation
     -- ^ Index name, required
   , id_ :: {-# UNPACK #-} !M.MaybeShortText
     -- ^ Document ID, optional but strongly recommended.
-  , document :: !Json.Value
+  , document :: !(SmallArray Json.Member)
     -- ^ Document 
   } deriving (Show)
 
@@ -61,7 +61,7 @@ encodeOne Operation{action,index,id_,document} =
          <> Builder.shortTextJsonString t
      ) id_
   <> Builder.ascii3 '}' '}' '\n'
-  <> Json.encode document
+  <> Json.encode (Json.Object document)
   <> Builder.ascii '\n'
 
 -- When we encode the first part of the operation, we are trying to
@@ -134,5 +134,5 @@ encodeSmileOne Operation{action,index,id_,document} =
        (encodeSmileActionWithoutDocId action index)
        (encodeSmileAction action index)
        id_
-  <> Json.Smile.encode document
+  <> Json.Smile.encode (Json.Object document)
   <> Builder.word8 0xFF
