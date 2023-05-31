@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name: elasticsearch-interchange
-version: 0.1.0.0
+version: 0.2.0.0
 synopsis: Serialization of Elasticsearch requests and responses
 description:
   This library provides data types for communicating with elasticsearch. It
