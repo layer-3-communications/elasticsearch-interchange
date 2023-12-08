@@ -46,10 +46,10 @@ data Shard = Shard
   } deriving (Show)
 
 data Type = Primary | Replica
-  deriving (Show)
+  deriving (Show,Eq)
 
 data State = Initializing | Relocating | Started | Unassigned
-  deriving (Show)
+  deriving (Show,Eq)
 
 parser :: J.Value -> Parser Response
 parser v = fmap Response (P.array v >>= P.smallArray shardParser)
