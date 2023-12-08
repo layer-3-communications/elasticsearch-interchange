@@ -1,0 +1,42 @@
+[
+  {
+    "index": "foo-2023.12.07",
+    "shard": "0",
+    "prirep": "r",
+    "state": "STARTED",
+    "docs": "78241326",
+    "store": "36397434327",
+    "ip": "192.168.10.228",
+    "node": "os-warm-8"
+  },
+  {
+    "index": "foo-2023.12.07",
+    "shard": "0",
+    "prirep": "p",
+    "state": "STARTED",
+    "docs": "78241326",
+    "store": "36479987144",
+    "ip": "192.168.10.226",
+    "node": "os-warm-6"
+  },
+  {
+    "index": "foo-2023.12.07",
+    "shard": "1",
+    "prirep": "p",
+    "state": "STARTED",
+    "docs": "78247675",
+    "store": "36514371817",
+    "ip": "192.168.10.221",
+    "node": "os-warm-1"
+  },
+  {
+    "index": "foo-2023.12.07",
+    "shard": "1",
+    "prirep": "r",
+    "state": "STARTED",
+    "docs": "78247675",
+    "store": "36353685169",
+    "ip": "192.168.10.225",
+    "node": "os-warm-5"
+  }
+]

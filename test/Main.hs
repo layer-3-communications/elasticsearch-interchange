@@ -25,6 +25,7 @@ import qualified Elasticsearch.Bulk.Request as Bulk.Request
 import qualified Elasticsearch.Bulk.Response as Bulk.Response
 import qualified Elasticsearch.Search.Response as Search.Response
 import qualified Elasticsearch.Cat.Indices.Response as Cat.Indices.Response
+import qualified Elasticsearch.Cat.Shards.Response as Cat.Shards.Response
 import qualified Elasticsearch.Cat.Aliases.Response as Cat.Aliases.Response
 import qualified Elasticsearch.Aliases.Request as Aliases.Request
 import qualified Json
@@ -55,6 +56,12 @@ tests = testGroup "Elasticsearch"
     [ testGroup "Response"
       [ goldenVsString "001" "samples/cat/indices/response/001/output.txt" $ do
           prepare "samples/cat/indices/response/001/input.json" Cat.Indices.Response.parser
+      ]
+    ]
+  , testGroup "CatShards"
+    [ testGroup "Response"
+      [ goldenVsString "001" "samples/cat/shards/response/001/output.txt" $ do
+          prepare "samples/cat/shards/response/001/input.json" Cat.Shards.Response.parser
       ]
     ]
   , testGroup "Aliases"

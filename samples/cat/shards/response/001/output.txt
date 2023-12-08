@@ -1,0 +1,32 @@
+Response
+  { shards =
+      [ Shard
+          { index = "foo-2023.12.07"
+          , shard = 0
+          , type_ = Replica
+          , state = Started
+          , node = "os-warm-8"
+          }
+      , Shard
+          { index = "foo-2023.12.07"
+          , shard = 0
+          , type_ = Primary
+          , state = Started
+          , node = "os-warm-6"
+          }
+      , Shard
+          { index = "foo-2023.12.07"
+          , shard = 1
+          , type_ = Primary
+          , state = Started
+          , node = "os-warm-1"
+          }
+      , Shard
+          { index = "foo-2023.12.07"
+          , shard = 1
+          , type_ = Replica
+          , state = Started
+          , node = "os-warm-5"
+          }
+      ]
+  }
