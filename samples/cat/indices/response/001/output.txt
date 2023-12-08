@@ -1,12 +1,25 @@
 Response
   { indices =
-      fromListN
-        3
-        [ Index
-            { health = Green , status = Open , index = "example-alpha" }
-        , Index
-            { health = Green , status = Closed , index = "example-beta" }
-        , Index
-            { health = Yellow , status = Open , index = "example-gamma" }
-        ]
+      [ Index
+          { health = Green
+          , status = Open
+          , index = "example-alpha"
+          , docsCount = 6728
+          , docsDeleted = 152
+          }
+      , Index
+          { health = Green
+          , status = Closed
+          , index = "example-beta"
+          , docsCount = 85
+          , docsDeleted = 0
+          }
+      , Index
+          { health = Yellow
+          , status = Open
+          , index = "example-gamma"
+          , docsCount = 22517
+          , docsDeleted = 6019
+          }
+      ]
   }

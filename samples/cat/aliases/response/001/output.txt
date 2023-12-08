@@ -1,9 +1,7 @@
 Response
   { indices =
-      fromListN
-        3
-        [ Alias { alias = "widgets" , index = "widgets-2022.09.21" }
-        , Alias { alias = "widgets" , index = "widgets-2022.09.22" }
-        , Alias { alias = "gadgets" , index = "gadgets-2022.09.21" }
-        ]
+      [ Alias { alias = "widgets" , index = "widgets-2022.09.21" }
+      , Alias { alias = "widgets" , index = "widgets-2022.09.22" }
+      , Alias { alias = "gadgets" , index = "gadgets-2022.09.21" }
+      ]
   }

@@ -21,6 +21,8 @@ module Elasticsearch.Cat.Indices.Response
 import Control.Monad ((>=>))
 import Data.Primitive (SmallArray)
 import Data.Text.Short (ShortText)
+import Data.Word (Word64)
+import Elasticsearch.Internal (generousW64)
 import Json.Parser (Parser)
 
 import qualified Json as J
@@ -37,6 +39,10 @@ data Index = Index
     -- ^ Status: open or closed (@status@)
   , index :: !ShortText
     -- ^ The name of the index (@index@)
+  , docsCount :: !Word64
+    -- ^ Total number of documents (@docs.count@)
+  , docsDeleted :: !Word64
+    -- ^ Number of deleted documents (@docs.deleted@)
   } deriving (Show)
 
 data Health = Green | Yellow | Red
@@ -55,7 +61,9 @@ indexParser v = do
     ( do health <- P.key "health" (P.string >=> healthParser)
          status <- P.key "status" (P.string >=> statusParser)
          index <- P.key "index" P.string
-         pure Index{health,status,index}
+         docsCount <- P.key "docs.count" generousW64
+         docsDeleted <- P.key "docs.deleted" generousW64
+         pure Index{health,status,index,docsCount,docsDeleted}
     ) mbrs
 
 healthParser :: ShortText -> Parser Health
